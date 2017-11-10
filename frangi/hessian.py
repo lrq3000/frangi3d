@@ -6,6 +6,10 @@ from scipy import ndimage as ndi
 from .utils import absolute_eigenvaluesh
 
 
+__all__ = ["compute_hessian_matrix",
+           "absolute_hessian_eigenvalues"]
+
+
 def compute_hessian_matrix(nd_array, sigma=1, scale=True):
     """
     Computes the hessian matrix for an nd_array.
