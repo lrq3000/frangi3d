@@ -63,12 +63,20 @@ def compute_hessian_matrix(nd_array, sigma=1, scale=True):
     return hessian
 
 
-def absolute_hessian_eigenvalues(nd_array, sigma=1, scale=True):
+def absolute_hessian_eigenvalues(nd_array, sigma=1, scale=True, estimate_frangi_c=False):
     """
-    Eigenvalues of the hessian matrix calculated from the input array sorted by absolute value.
-    :param nd_array: input array from which to calculate hessian eigenvalues.
-    :param sigma: gaussian smoothing parameter.
-    :param scale: if True hessian values will be scaled according to sigma squared.
-    :return: list of eigenvalues [eigenvalue1, eigenvalue2, ...]
+    :brief:                     Eigenvalues of the hessian matrix calculated from the input array
+                                sorted by absolute value.
+    :param nd_array:            input array from which to calculate hessian eigenvalues.
+    :param sigma:               Gaussian smoothing parameter.
+    :param scale:               if True hessian values will be scaled according to sigma squared.
+    :param estimate_frangi_c:   estimate the c parameter from the maximum hessian norm?
+    :return:                    list of eigenvalues [eigenvalue1, eigenvalue2, ...] and an estimate
+                                for the c parameter for the frangi vesselness.
     """
-    return absolute_eigenvaluesh(compute_hessian_matrix(nd_array, sigma=sigma, scale=scale))
+    H = compute_hessian_matrix(nd_array, sigma=sigma, scale=scale)
+    if estimate_frangi_c:
+        frangi_c_est = 0.5 * np.linalg.norm(H, ord=np.inf, axis=(3,4))  # half of the maximum Hessian norm
+    else:
+        frangi_c_est = None
+    return absolute_eigenvaluesh(H), frangi_c_est

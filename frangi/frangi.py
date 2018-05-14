@@ -27,15 +27,11 @@ def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, fra
     filtered_array = np.zeros(sigmas.shape + nd_array.shape)
 
     for i, sigma in enumerate(sigmas):
-        eigenvalues = absolute_hessian_eigenvalues(nd_array, sigma=sigma, scale=True)
+        eigenvalues, frangi_c_est = absolute_hessian_eigenvalues(
+            nd_array, sigma=sigma, scale=True, estimate_frangi_c=estimate_frangi_c)
 
         if estimate_frangi_c:
-            """
-            a good estimate of this parameter seems to be half of the maximum hessian norm
-            as this is cumbersome to calculate and the spectral radius is always <= the norm of a
-            matrix, we take the half of the maximum spectral radius here.
-            """
-            frangi_c = 0.5 * max([np.max(e) for e in eigenvalues])
+            frangi_c = frangi_c_est
 
         filtered_array[i] = compute_vesselness(*eigenvalues, alpha=alpha, beta=beta, c=frangi_c,
                                                black_white=black_vessels)
