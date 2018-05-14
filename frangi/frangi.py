@@ -14,7 +14,7 @@ __all__ = ["frangi",
 
 
 def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, frangi_c=500,
-           black_vessels=True, estimate_frangi_c=True):
+           black_vessels=True, estimate_frangi_c=True, debug=None):
 
     if not nd_array.ndim == 3:
         raise(ValueError("Only 3 dimensions is currently supported"))
@@ -34,7 +34,7 @@ def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, fra
             frangi_c = frangi_c_est
 
         filtered_array[i] = compute_vesselness(*eigenvalues, alpha=alpha, beta=beta, c=frangi_c,
-                                               black_white=black_vessels)
+                                               black_white=black_vessels, debug=debug)
 
     return np.max(filtered_array, axis=0)
 
@@ -63,11 +63,22 @@ def compute_background_factor(S, c):
     return 1 - np.exp(np.negative(np.square(S)) / (2 * np.square(c)))
 
 
-def compute_vesselness(eigen1, eigen2, eigen3, alpha, beta, c, black_white):
+def compute_vesselness(eigen1, eigen2, eigen3, alpha, beta, c, black_white, debug=None):
     Ra, Rb, S = compute_measures(eigen1, eigen2, eigen3)
     plate = compute_plate_like_factor(Ra, alpha)
     blob = compute_blob_like_factor(Rb, beta)
     background = compute_background_factor(S, c)
+
+    if debug is not None:
+        debug.push_subdir("vesselness")
+
+        debug.save_mhd("plate.mhd", "w", plate)
+        debug.save_mhd("blob.mhd", "w", blob)
+        debug.save_mhd("background.mhd", "w", background)
+
+        debug.pop_subdir()
+
+
     return filter_out_background(plate * blob * background, black_white, eigen2, eigen3)
 
 
