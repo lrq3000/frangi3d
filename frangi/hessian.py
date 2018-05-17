@@ -76,7 +76,7 @@ def absolute_hessian_eigenvalues(nd_array, sigma=1, scale=True, estimate_frangi_
     """
     H = compute_hessian_matrix(nd_array, sigma=sigma, scale=scale)
     if estimate_frangi_c:
-        frangi_c_est = 0.5 * np.linalg.norm(H, ord=np.inf, axis=(3,4))  # half of the maximum Hessian norm
+        frangi_c_est = 0.5 * np.max(np.linalg.norm(H, ord='fro', axis=(3,4)))  # half of the maximum Hessian norm
     else:
         frangi_c_est = None
     return absolute_eigenvaluesh(H), frangi_c_est
