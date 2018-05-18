@@ -47,7 +47,7 @@ def compute_hessian_matrix(nd_array, sigma=1, scale=True):
         hessian_elements = [(sigma ** 2) * element for element in hessian_elements]
 
     # create hessian matrix from hessian elements
-    hessian_full = [[None] * ndim] * ndim
+    hessian_full= [[None] * ndim] * ndim  # [[[]] * ndim for x in range(ndim)]
 
     for index, (ax0, ax1) in enumerate(combinations_with_replacement(range(ndim), 2)):
         element = hessian_elements[index]
