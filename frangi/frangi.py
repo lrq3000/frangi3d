@@ -3,6 +3,14 @@ import numpy as np
 from .utils import divide_nonzero
 from .hessian import absolute_hessian_eigenvalues
 
+try:
+    from tqdm.auto import tqdm
+except ImportError:
+    def tqdm(*args, **kwargs):
+        if args:
+            return args[0]
+        return kwargs.get('iterable', None)
+
 
 __all__ = ["frangi",
            "compute_measures",
@@ -26,7 +34,7 @@ def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, fra
 
     filtered_array = np.zeros(sigmas.shape + nd_array.shape)
 
-    for i, sigma in enumerate(sigmas):
+    for i, sigma in enumerate(tqdm(sigmas, desc='FRANGI-SCALE')):
         eigenvalues, frangi_c_est = absolute_hessian_eigenvalues(
             nd_array, sigma=sigma, scale=True, estimate_frangi_c=estimate_frangi_c)
 

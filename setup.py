@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = "0.1.0"
+version = "0.2.0"
 
 with open("./README.md") as fd:
     long_description = fd.read()
@@ -12,13 +12,15 @@ setup(
     long_description=long_description,
     install_requires=[
         "numpy",
-        "scipy"
+        "scipy",
+        "tqdm"
     ],
     packages=["frangi"],
     license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5'
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.7'
     ]
 )
