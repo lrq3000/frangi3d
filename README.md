@@ -2,7 +2,7 @@
 
 The Frangi filter for 3D numpy arrays.
 
-This project utilizes scipy and numpy to compute eigenvalues for 3D numpy arrays which are then used as part of the Frangi filter for vesselness.
+This project utilizes scipy and numpy to compute eigenvalues for 3D numpy arrays which are then used as part of the Frangi filter for vesselness. This update implements an automatic estimator for the C parameter.
 
 ## Install
 
@@ -26,7 +26,11 @@ imgpath = r'path/to/image.nii'
 im = image.load_img(imgpath)
 
 # Compute Frangi vesselness filter
-im_frangi = frangi(im.get_fdata())
+im_frangi_data = frangi(im.get_fdata())
+
+# Convert back to a NIfTI image and save on disk
+im_frangi = nib.Nifti1Image(im_frangi_data, affine=im.affine)
+nib.save(im_frangi, r'frangivesselness.nii')
 ```
 
 ## License
