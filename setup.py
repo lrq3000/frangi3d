@@ -8,6 +8,7 @@ with open("./README.md") as fd:
 
 setup(
     name="frangi3d",
+    version=version,
     description="3D Frangi / Vesselness filter",
     long_description=long_description,
     install_requires=[
