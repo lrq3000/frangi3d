@@ -26,7 +26,7 @@ def absolute_eigenvaluesh(nd_array):
     :param nd_array: array from which the eigenvalues will be calculated.
     :return: A list with the eigenvalues sorted in absolute ascending order (e.g. [eigenvalue1, eigenvalue2, ...])
     """
-    eigenvalues = np.linalg.eigvalsh(nd_array)
+    eigenvalues = np.linalg.eigvalsh(nd_array)  # TODO: try to improve performance (or display progress), this is where most of the computation time is spent at
     sorted_eigenvalues = sortbyabs(eigenvalues, axis=-1)
     return [np.squeeze(eigenvalue, axis=-1)
             for eigenvalue in np.split(sorted_eigenvalues, sorted_eigenvalues.shape[-1], axis=-1)]
