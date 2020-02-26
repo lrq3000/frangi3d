@@ -4,7 +4,17 @@ from .utils import divide_nonzero
 from .hessian import absolute_hessian_eigenvalues
 
 
-def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, frangi_c=500, black_vessels=True):
+__all__ = ["frangi",
+           "compute_measures",
+           "compute_plate_like_factor",
+           "compute_blob_like_factor",
+           "compute_background_factor",
+           "compute_vesselness",
+           "filter_out_background"]
+
+
+def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, frangi_c=500,
+           black_vessels=True, estimate_frangi_c=True):
 
     if not nd_array.ndim == 3:
         raise(ValueError("Only 3 dimensions is currently supported"))
@@ -17,7 +27,12 @@ def frangi(nd_array, scale_range=(1, 10), scale_step=2, alpha=0.5, beta=0.5, fra
     filtered_array = np.zeros(sigmas.shape + nd_array.shape)
 
     for i, sigma in enumerate(sigmas):
-        eigenvalues = absolute_hessian_eigenvalues(nd_array, sigma=sigma, scale=True)
+        eigenvalues, frangi_c_est = absolute_hessian_eigenvalues(
+            nd_array, sigma=sigma, scale=True, estimate_frangi_c=estimate_frangi_c)
+
+        if estimate_frangi_c:
+            frangi_c = frangi_c_est
+
         filtered_array[i] = compute_vesselness(*eigenvalues, alpha=alpha, beta=beta, c=frangi_c,
                                                black_white=black_vessels)
 
@@ -53,6 +68,7 @@ def compute_vesselness(eigen1, eigen2, eigen3, alpha, beta, c, black_white):
     plate = compute_plate_like_factor(Ra, alpha)
     blob = compute_blob_like_factor(Rb, beta)
     background = compute_background_factor(S, c)
+
     return filter_out_background(plate * blob * background, black_white, eigen2, eigen3)
 
 
